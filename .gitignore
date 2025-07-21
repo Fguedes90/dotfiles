@@ -20,3 +20,6 @@ hyprland/.config/hypr/conf.d/clamshell-loader.conf
 
 # Arquivos do sistema
 .directory
+
+# GitHub CLI - contains sensitive tokens
+gh/.config/gh/hosts.yml
