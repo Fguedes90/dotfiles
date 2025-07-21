@@ -1,0 +1,22 @@
+# Arquivos temporários
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Arquivos de cache
+__pycache__/
+*.pyc
+
+# Arquivos gerados dinamicamente
+hyprland/.config/hypr/conf.d/clamshell-loader.conf
+
+# Backups
+*.bak
+*.backup
+
+# Arquivos do sistema
+.directory

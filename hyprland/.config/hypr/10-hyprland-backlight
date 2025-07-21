@@ -1,0 +1,13 @@
+# Hyprland Backlight Control - ASUS ROG Flow X13
+# Este arquivo deve ser copiado para /etc/sudoers.d/
+# 
+# Permite controle de backlight sem senha para scripts do Hyprland
+# Necessário para o funcionamento automático do modo clamshell
+#
+# INSTALAÇÃO:
+# sudo cp $HOME/.config/hypr/10-hyprland-backlight /etc/sudoers.d/
+# sudo chmod 440 /etc/sudoers.d/10-hyprland-backlight
+# sudo visudo -c -f /etc/sudoers.d/10-hyprland-backlight
+
+# Permitir controle de backlight sem senha para todos os usuários do grupo wheel
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/tee /sys/class/backlight/*/brightness

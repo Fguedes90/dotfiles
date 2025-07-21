@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(hyprctl:*)",
+      "Bash(pgrep:*)",
+      "Bash(echo $WAYLAND_DISPLAY)",
+      "Bash(~/.local/bin/waybar-manager:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)"
+    ],
+    "deny": []
+  }
+}

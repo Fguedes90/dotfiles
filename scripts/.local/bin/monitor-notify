@@ -1,0 +1,68 @@
+#!/bin/bash
+# Script para enviar notificações visuais sobre modos de monitor
+
+send_monitor_notification() {
+    local mode="$1"
+    local external_monitor="${2:-none}"
+    local icon=""
+    local title=""
+    local message=""
+    local urgency="normal"
+    
+    case "$mode" in
+        "clamshell")
+            icon="computer-laptop"
+            title="🖥️ Modo Clamshell"
+            message="Monitor externo: $external_monitor\nNotebook: Tela desligada"
+            urgency="normal"
+            ;;
+            
+        "dual")
+            icon="video-display"
+            title="🖥️💻 Modo Dual Monitor"
+            message="Monitor principal: eDP-1\nMonitor secundário: $external_monitor"
+            urgency="normal"
+            ;;
+            
+        "single")
+            icon="computer"
+            title="💻 Modo Single"
+            message="Apenas tela do notebook\nMonitor externo: Desconectado"
+            urgency="low"
+            ;;
+            
+        "connecting")
+            icon="network-wireless"
+            title="🔄 Detectando Monitor..."
+            message="Configurando displays..."
+            urgency="low"
+            ;;
+            
+        "error")
+            icon="dialog-error"
+            title="❌ Erro de Monitor"
+            message="$external_monitor"
+            urgency="critical"
+            ;;
+            
+        *)
+            icon="preferences-desktop-display"
+            title="🖥️ Monitor"
+            message="Configuração atualizada"
+            urgency="normal"
+            ;;
+    esac
+    
+    # Enviar notificação
+    notify-send -i "$icon" \
+                -t 3000 \
+                -u "$urgency" \
+                -h string:x-canonical-private-synchronous:monitor \
+                "$title" \
+                "$message"
+}
+
+# Se chamado diretamente com argumentos
+if [ $# -gt 0 ]; then
+    send_monitor_notification "$@"
+fi

@@ -1,0 +1,37 @@
+# ========================================
+# CONFIGURAÇÃO DE MONITORES - DOCUMENTAÇÃO
+# ========================================
+# 
+# IMPORTANTE: As configurações ativas de monitores estão em:
+# ~/.config/hypr/conf.d/devices/rog-flow-x13.conf
+#
+# Este arquivo serve apenas como documentação e referência.
+# NÃO descomente linhas aqui - use rog-flow-x13.conf
+#
+# ========================================
+# COMPORTAMENTO AUTOMÁTICO
+# ========================================
+# O script clamshell.sh gerencia automaticamente:
+# - Detecção de monitores externos
+# - Modo clamshell (lid fechado + monitor externo)
+# - Modo dual (lid aberto + monitor externo)
+# - Modo single (apenas notebook)
+#
+# ========================================
+# ATALHOS DE CONTROLE MANUAL
+# ========================================
+# SUPER+CTRL+M: Forçar modo dual monitor
+# SUPER+CTRL+C: Forçar modo clamshell  
+# SUPER+CTRL+S: Forçar modo single monitor
+# SUPER+`: Alternar foco entre monitores
+# SUPER+SHIFT+`: Mover workspace para outro monitor
+#
+# ========================================
+# LOGS E DEBUGGING
+# ========================================
+# - /tmp/clamshell-final-rog.log (atividade do script)
+# - /tmp/lid-switch-backlight-rog.log (eventos de lid)
+#
+# Para testar: ~/.config/hypr/scripts/display/clamshell.sh test
+
+# Nota: Configuração de escala foi movida para environment.conf

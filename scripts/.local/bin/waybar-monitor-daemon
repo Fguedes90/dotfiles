@@ -1,0 +1,42 @@
+#!/bin/bash
+# Daemon para monitorar e prevenir múltiplas instâncias da waybar
+
+LOG_FILE="/tmp/waybar-monitor-daemon.log"
+
+# Função de log
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
+}
+
+# Verificar se já está rodando
+if pgrep -f "waybar-monitor-daemon" | grep -v $$ > /dev/null; then
+    log_message "Daemon já está rodando. Saindo."
+    exit 0
+fi
+
+log_message "Iniciando waybar monitor daemon..."
+
+# Loop principal
+while true; do
+    waybar_count=$(pgrep -x waybar | wc -l)
+    
+    if [ "$waybar_count" -gt 1 ]; then
+        log_message "AVISO: $waybar_count instâncias da waybar detectadas!"
+        
+        # Matar todas menos a primeira
+        pgrep -x waybar | tail -n +2 | while read pid; do
+            log_message "Matando waybar duplicada (PID: $pid)"
+            kill $pid 2>/dev/null
+        done
+        
+        # Notificar usuário
+        notify-send "Waybar" "Múltiplas instâncias detectadas e corrigidas" -i dialog-warning
+    elif [ "$waybar_count" -eq 0 ]; then
+        log_message "Nenhuma waybar detectada. Iniciando..."
+        waybar &
+        log_message "Waybar iniciada (PID: $!)"
+    fi
+    
+    # Aguardar antes da próxima verificação
+    sleep 10
+done

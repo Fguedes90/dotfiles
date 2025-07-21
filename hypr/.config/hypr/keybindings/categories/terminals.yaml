@@ -1,0 +1,40 @@
+application:
+  name: "Emuladores de Terminal"
+  class: "terminals"
+  icon: "💻"
+  
+categories:
+  - name: "Controle de Terminal"
+    keybindings:
+      - key: "Ctrl+Shift+T"
+        action: "Nova aba"
+      - key: "Ctrl+Shift+N"
+        action: "Nova janela"
+      - key: "Ctrl+Shift+W"
+        action: "Fechar aba"
+      - key: "Ctrl+Tab"
+        action: "Próxima aba"
+        
+  - name: "Texto e Clipboard"
+    keybindings:
+      - key: "Ctrl+Shift+C"
+        action: "Copiar"
+      - key: "Ctrl+Shift+V"
+        action: "Colar"
+      - key: "Ctrl+Shift+F"
+        action: "Buscar"
+      - key: "Ctrl+Plus/Minus"
+        action: "Zoom in/out"
+        
+  - name: "Atalhos de Shell"
+    keybindings:
+      - key: "Ctrl+C"
+        action: "Interromper processo"
+      - key: "Ctrl+D"
+        action: "EOF/Logout"
+      - key: "Ctrl+L"
+        action: "Limpar tela"
+      - key: "Ctrl+Z"
+        action: "Suspender processo"
+      - key: "Ctrl+R"
+        action: "Buscar histórico"

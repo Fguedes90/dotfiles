@@ -1,0 +1,103 @@
+#!/bin/bash
+# Script melhorado para notificação de volume com Mako
+
+# Função para obter o volume atual
+get_volume() {
+    # Tenta wpctl primeiro
+    if command -v wpctl &> /dev/null; then
+        VOL=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{print int($2*100)}')
+        if [ -n "$VOL" ]; then
+            echo "$VOL"
+            return
+        fi
+    fi
+    
+    # Fallback para pactl
+    if command -v pactl &> /dev/null; then
+        VOL=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -Po '[0-9]+(?=%)' | head -1)
+        if [ -n "$VOL" ]; then
+            echo "$VOL"
+            return
+        fi
+    fi
+    
+    # Fallback para amixer
+    if command -v amixer &> /dev/null; then
+        VOL=$(amixer get Master 2>/dev/null | grep -Po '[0-9]+(?=%)' | head -1)
+        if [ -n "$VOL" ]; then
+            echo "$VOL"
+            return
+        fi
+    fi
+    
+    # Valor padrão se nada funcionar
+    echo "50"
+}
+
+# Função para verificar se está mutado
+is_muted() {
+    # Tenta wpctl
+    if command -v wpctl &> /dev/null; then
+        wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | grep -q "MUTED" && return 0
+    fi
+    
+    # Tenta pactl
+    if command -v pactl &> /dev/null; then
+        pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -q "yes" && return 0
+    fi
+    
+    # Tenta amixer
+    if command -v amixer &> /dev/null; then
+        amixer get Master 2>/dev/null | grep -q "\[off\]" && return 0
+    fi
+    
+    return 1
+}
+
+# Obter volume atual
+VOLUME=$(get_volume)
+
+# Garantir que VOLUME tem um valor numérico
+if [ -z "$VOLUME" ] || ! [[ "$VOLUME" =~ ^[0-9]+$ ]]; then
+    VOLUME=50
+fi
+
+# Verificar se está mutado
+if is_muted; then
+    ICON="audio-volume-muted-symbolic"
+    TEXT="🔇 Mudo"
+    URGENCY="low"
+else
+    if [ "$VOLUME" -ge 70 ]; then
+        ICON="audio-volume-high-symbolic"
+        TEXT="🔊"
+    elif [ "$VOLUME" -ge 30 ]; then
+        ICON="audio-volume-medium-symbolic"
+        TEXT="🔉"
+    else
+        ICON="audio-volume-low-symbolic"
+        TEXT="🔈"
+    fi
+    TEXT="$TEXT Volume: ${VOLUME}%"
+    URGENCY="low"
+fi
+
+# Criar barra de progresso visual
+BAR=""
+FILLED=$((VOLUME/5))  # Dividir por 5 para ter 20 blocos
+for i in $(seq 1 20); do
+    if [ $i -le $FILLED ]; then
+        BAR="${BAR}▰"
+    else
+        BAR="${BAR}▱"
+    fi
+done
+
+# Enviar notificação
+notify-send -i "$ICON" \
+            -t 2000 \
+            -u "$URGENCY" \
+            -h string:x-canonical-private-synchronous:volume \
+            -h int:value:"$VOLUME" \
+            "$TEXT" \
+            "$BAR"

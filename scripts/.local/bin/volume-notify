@@ -1,0 +1,48 @@
+#!/bin/bash
+# Script para mostrar notificação de volume com dunst
+
+# Função para obter o volume atual
+get_volume() {
+    wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'
+}
+
+# Função para verificar se está mutado
+is_muted() {
+    wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q "MUTED"
+}
+
+# Obter volume atual
+VOLUME=$(get_volume)
+
+# Verificar se está mutado
+if is_muted; then
+    ICON="audio-volume-muted"
+    TEXT="Mudo"
+else
+    if [ $VOLUME -ge 70 ]; then
+        ICON="audio-volume-high"
+    elif [ $VOLUME -ge 30 ]; then
+        ICON="audio-volume-medium"
+    else
+        ICON="audio-volume-low"
+    fi
+    TEXT="Volume: ${VOLUME}%"
+fi
+
+# Criar barra de progresso
+BAR=""
+FILLED=$((VOLUME/10))
+for i in $(seq 1 10); do
+    if [ $i -le $FILLED ]; then
+        BAR="${BAR}█"
+    else
+        BAR="${BAR}░"
+    fi
+done
+
+# Enviar notificação
+dunstify -i "$ICON" \
+         -t 1500 \
+         -h string:x-dunst-stack-tag:volume \
+         -h int:value:$VOLUME \
+         "$TEXT" "$BAR"

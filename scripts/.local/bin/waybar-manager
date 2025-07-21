@@ -1,0 +1,99 @@
+#!/bin/bash
+# Script para gerenciar waybar e evitar múltiplas instâncias
+
+# Função para matar todas as instâncias da waybar
+kill_waybar() {
+    pkill -x waybar
+    sleep 0.5
+}
+
+# Função para contar instâncias
+count_waybar() {
+    pgrep -x waybar | wc -l
+}
+
+# Função para iniciar waybar com proteção
+start_waybar_safe() {
+    # Primeiro, garantir que não há instâncias rodando
+    kill_waybar
+    
+    # Aguardar um momento para garantir que processos foram encerrados
+    sleep 1
+    
+    # Iniciar waybar
+    waybar &
+    
+    # Log
+    echo "$(date): Waybar iniciada (PID: $!)" >> /tmp/waybar-manager.log
+}
+
+# Função para verificar e corrigir múltiplas instâncias
+fix_multiple_instances() {
+    local count=$(count_waybar)
+    
+    if [ "$count" -gt 1 ]; then
+        echo "⚠️  Detectadas $count instâncias da waybar. Corrigindo..."
+        kill_waybar
+        start_waybar_safe
+        echo "✅ Corrigido! Apenas 1 instância rodando agora."
+    elif [ "$count" -eq 0 ]; then
+        echo "❌ Nenhuma waybar rodando. Iniciando..."
+        start_waybar_safe
+        echo "✅ Waybar iniciada!"
+    else
+        echo "✅ Waybar rodando normalmente (1 instância)"
+    fi
+}
+
+# Função principal
+case "${1:-check}" in
+    "start")
+        start_waybar_safe
+        ;;
+    "restart")
+        echo "🔄 Reiniciando waybar..."
+        kill_waybar
+        start_waybar_safe
+        ;;
+    "stop")
+        echo "🛑 Parando waybar..."
+        kill_waybar
+        ;;
+    "fix")
+        fix_multiple_instances
+        ;;
+    "check")
+        count=$(count_waybar)
+        echo "📊 Status da waybar:"
+        echo "   Instâncias rodando: $count"
+        if [ "$count" -gt 0 ]; then
+            echo "   PIDs:"
+            pgrep -x waybar | while read pid; do
+                echo "     - $pid"
+            done
+        fi
+        ;;
+    "monitor")
+        # Monitorar continuamente
+        echo "👁️  Monitorando waybar (Ctrl+C para parar)..."
+        while true; do
+            count=$(count_waybar)
+            if [ "$count" -gt 1 ]; then
+                echo "$(date): Múltiplas instâncias detectadas! Corrigindo..."
+                fix_multiple_instances
+            fi
+            sleep 5
+        done
+        ;;
+    *)
+        echo "Uso: $0 {start|restart|stop|fix|check|monitor}"
+        echo ""
+        echo "  start   - Inicia waybar (mata duplicadas primeiro)"
+        echo "  restart - Reinicia waybar"
+        echo "  stop    - Para todas as instâncias"
+        echo "  fix     - Corrige múltiplas instâncias"
+        echo "  check   - Verifica status"
+        echo "  monitor - Monitora e corrige automaticamente"
+        exit 1
+        ;;
+esac

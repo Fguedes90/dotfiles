@@ -1,0 +1,23 @@
+#!/bin/bash
+# Script para alternar terminal padrão no Hyprland
+
+HYPR_CONFIG="$HOME/.config/hypr/hyprland.conf"
+
+case "$1" in
+    ghostty)
+        sed -i 's/^\$terminal = .*/\$terminal = ghostty/' "$HYPR_CONFIG"
+        echo "Terminal padrão alterado para: Ghostty"
+        echo "Recarregue o Hyprland com SUPER+SHIFT+R"
+        ;;
+    alacritty)
+        sed -i 's/^\$terminal = .*/\$terminal = alacritty/' "$HYPR_CONFIG"
+        echo "Terminal padrão alterado para: Alacritty"
+        echo "Recarregue o Hyprland com SUPER+SHIFT+R"
+        ;;
+    *)
+        echo "Uso: $0 {ghostty|alacritty}"
+        echo ""
+        echo "Terminal atual:"
+        grep '^\$terminal' "$HYPR_CONFIG"
+        ;;
+esac

@@ -1,0 +1,32 @@
+general.import = [ "~/.config/omarchy/current/theme/alacritty.toml" ]
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+normal = { family = "CaskaydiaMono Nerd Font", style = "Regular" }
+bold = { family = "CaskaydiaMono Nerd Font", style = "Bold" }
+italic = { family = "CaskaydiaMono Nerd Font", style = "Italic" }
+size = 9
+
+[window]
+padding.x = 14
+padding.y = 14
+decorations = "None"
+opacity = 0.98
+
+[selection]
+# Copiar automaticamente quando selecionar texto
+save_to_clipboard = true
+
+[keyboard]
+bindings = [
+{ key = "F11", action = "ToggleFullscreen" },
+# Copiar sem Shift
+{ key = "C", mods = "Control", action = "Copy" },
+# Colar sem Shift
+{ key = "V", mods = "Control", action = "Paste" },
+# Manter também com Shift para compatibilidade
+{ key = "C", mods = "Control|Shift", action = "Copy" },
+{ key = "V", mods = "Control|Shift", action = "Paste" }
+]

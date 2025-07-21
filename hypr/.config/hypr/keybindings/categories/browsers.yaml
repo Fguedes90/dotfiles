@@ -1,0 +1,37 @@
+application:
+  name: "Navegadores Web"
+  class: "browsers"
+  icon: "🌐"
+  
+categories:
+  - name: "Navegação Básica"
+    keybindings:
+      - key: "Ctrl+T"
+        action: "Nova aba"
+      - key: "Ctrl+W"
+        action: "Fechar aba"
+      - key: "Ctrl+Shift+T"
+        action: "Reabrir aba fechada"
+      - key: "Ctrl+Tab"
+        action: "Próxima aba"
+      - key: "Alt+←/→"
+        action: "Voltar/Avançar"
+      - key: "F5"
+        action: "Recarregar"
+      - key: "Ctrl+L"
+        action: "Barra de endereço"
+        
+  - name: "Funcionalidades"
+    keybindings:
+      - key: "Ctrl+D"
+        action: "Adicionar favorito"
+      - key: "Ctrl+H"
+        action: "Histórico"
+      - key: "Ctrl+J"
+        action: "Downloads"
+      - key: "Ctrl+F"
+        action: "Buscar na página"
+      - key: "F11"
+        action: "Tela cheia"
+      - key: "F12"
+        action: "Developer tools"
